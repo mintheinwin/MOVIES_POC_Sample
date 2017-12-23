@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import com.mtw.movie_poc_screen.events.RestApiEvents;
 import com.mtw.movie_poc_screen.network.responses.GetMovieResponse;
+import com.mtw.movie_poc_screen.utils.APIConstants;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,7 +37,7 @@ public class MovieDataAgentImpl implements MovieDataAgent {
                 .build();
         // time 60 sec is optimal.
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://padcmyanmar.com/padc-3/popular-movies/apis/")
+                .baseUrl(APIConstants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .client(okHttpClient)
                 .build();
