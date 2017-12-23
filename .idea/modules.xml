@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://C:\Users\Aspire-V5\Downloads\PDAC_3_02_Proof_of_Concept-master\PDAC_3_02_Proof_of_Concept.iml" filepath="C:\Users\Aspire-V5\Downloads\PDAC_3_02_Proof_of_Concept-master\PDAC_3_02_Proof_of_Concept.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PDAC_MOVIES_POC_ASSIGNMENT7.iml" filepath="$PROJECT_DIR$/PDAC_MOVIES_POC_ASSIGNMENT7.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+    </modules>
+  </component>
+</project>
