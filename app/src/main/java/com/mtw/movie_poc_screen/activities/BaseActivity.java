@@ -9,26 +9,9 @@ import android.support.v7.app.AppCompatActivity;
  * Created by mtw on 12/6/2017.
  */
 
-public class BaseActivity extends AppCompatActivity {
-
-    private ProgressDialog mProgressDialog;
-
+public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    protected void showProgressDialog(String msg) {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-        }
-
-        mProgressDialog.setMessage(msg);
-        mProgressDialog.show();
-    }
-
-    protected void dismissProgressDialog() {
-        if(mProgressDialog.isShowing())
-            mProgressDialog.dismiss();
     }
 }
