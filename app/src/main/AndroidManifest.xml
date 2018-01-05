@@ -26,6 +26,12 @@
         <activity
             android:name="com.mtw.movie_poc_screen.activities.MovieDetailsOverviewActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <provider
+            android:name=".data.persistence.MoviesProvider"
+            android:authorities="com.mtw.movie_poc_screen"
+            android:exported="false"
+            android:syncable="true" />
     </application>
 
 </manifest>

@@ -2,10 +2,14 @@ package com.mtw.movie_poc_screen.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +21,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,13 +34,14 @@ import com.mtw.movie_poc_screen.components.EmptyViewPod;
 import com.mtw.movie_poc_screen.components.SmartRecyclerView;
 import com.mtw.movie_poc_screen.components.SmartVerticalScrollListener;
 import com.mtw.movie_poc_screen.data.models.MovieModel;
+import com.mtw.movie_poc_screen.data.persistence.MovieContract;
 import com.mtw.movie_poc_screen.data.vo.MoviePopularVO;
 import com.mtw.movie_poc_screen.events.RestApiEvents;
 
 /**
  * Created by Aspire-V5 on 12/6/2017.
  */
-public class MoviestListFragment extends BaseFragment {
+public class MoviestListFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     @BindView(R.id.rv_most_popular)
     SmartRecyclerView rvMostPopular;
 
@@ -75,7 +81,7 @@ public class MoviestListFragment extends BaseFragment {
         SmartVerticalScrollListener scrollListener = new SmartVerticalScrollListener(new SmartVerticalScrollListener.OnSmartVerticalScrollListener() {
             @Override
             public void onListEndReached() {
-                MovieModel.getInstance().loadMoreMovies();
+                MovieModel.getInstance().loadMoreMovies(getActivity());
             }
         });
 
@@ -84,7 +90,7 @@ public class MoviestListFragment extends BaseFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                MovieModel.getInstance().forceRefreshMovies();
+                MovieModel.getInstance().forceRefreshMovies(getActivity());
             }
         });
 
@@ -104,11 +110,11 @@ public class MoviestListFragment extends BaseFragment {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    /*@Subscribe(threadMode = ThreadMode.MAIN)
     public void onMovieDataLoaded(RestApiEvents.MoviesDataLoadedEvent event) {
         adapter.appendNewData(event.getLoadedMovies());
         swipeRefreshLayout.setRefreshing(false);
-    }
+    }*/
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorInvokingAPI(RestApiEvents.ErrorInvokingAPIEvent event) {
@@ -126,7 +132,7 @@ public class MoviestListFragment extends BaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        MovieModel.getInstance().startLoadingPopularMovies();
+        MovieModel.getInstance().startLoadingPopularMovies(context);
     }
 
     @Override
@@ -146,5 +152,36 @@ public class MoviestListFragment extends BaseFragment {
         super.onMovieOverviewTap(movie);
         Intent intent = MovieDetailsOverviewActivity.newIntent(getActivity().getApplicationContext(),movie);
         startActivity(intent);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(),
+                MovieContract.MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data != null && data.moveToFirst()) {
+            List<MoviePopularVO> movieList = new ArrayList<>();
+
+            do {
+                MoviePopularVO movie = MoviePopularVO.parseFromCursor(getActivity(), data);
+                movieList.add(movie);
+            } while (data.moveToNext());
+
+            adapter.setNewData(movieList);
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }

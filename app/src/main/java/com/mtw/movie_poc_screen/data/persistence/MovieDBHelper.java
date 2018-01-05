@@ -33,6 +33,20 @@ public class MovieDBHelper extends SQLiteOpenHelper {
             " UNIQUE (" + MovieEntry.COLUMN_TITLE + ") ON CONFLICT IGNORE" +
             " );";
 
+
+    private static final String SQL_CREATE_GENRE_TABLE = "CREATE TABLE " + MovieContract.GenreEntry.TABLE_NAME + " (" +
+            MovieContract.GenreEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            MovieContract.GenreEntry.COLUMN_GENRE_ID + " TEXT, " +
+            MovieContract.GenreEntry.COLUMN_GENRE_NAME + " TEXT, " +
+            " UNIQUE (" + MovieContract.GenreEntry.COLUMN_GENRE_ID + ") ON CONFLICT REPLACE" +
+            " );";
+
+    private static final String SQL_CREATE_MOVIE_GENRE_TABLE = "CREATE TABLE " + MovieContract.MovieGenreEntry.TABLE_NAME + " (" +
+            MovieContract.MovieGenreEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            MovieContract.MovieGenreEntry.COLUMN_GENRE_ID + " TEXT, " +
+            MovieContract.MovieGenreEntry.COLUMN_MOVIE_ID + " TEXT" +
+            " );";
+
     public MovieDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -40,12 +54,16 @@ public class MovieDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_GENRE_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_GENRE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
 
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieContract.MovieGenreEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieContract.GenreEntry.TABLE_NAME);
 
         onCreate(sqLiteDatabase);
     }

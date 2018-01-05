@@ -1,5 +1,6 @@
 package com.mtw.movie_poc_screen.network;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -54,7 +55,7 @@ public class MovieDataAgentImpl implements MovieDataAgent {
 
 
     @Override
-    public void loadPopularMovies(int page, String accessToken) {
+    public void loadPopularMovies(int page, String accessToken, final Context context) {
         Call<GetMovieResponse> loadPopularMoviesCall = movieAPI.loadPopularMovies(page, accessToken);
         loadPopularMoviesCall.enqueue(new Callback<GetMovieResponse>() {
             @Override
@@ -63,7 +64,7 @@ public class MovieDataAgentImpl implements MovieDataAgent {
                 Log.e("status ", getMovieResponse.getCode() + "");
                 if (getMovieResponse != null
                         && getMovieResponse.getPopularMovies().size() > 0) {
-                    RestApiEvents.MoviesDataLoadedEvent moviesDataLoadedEvent = new RestApiEvents.MoviesDataLoadedEvent(getMovieResponse.getPage(), getMovieResponse.getPopularMovies());
+                    RestApiEvents.MoviesDataLoadedEvent moviesDataLoadedEvent = new RestApiEvents.MoviesDataLoadedEvent(getMovieResponse.getPage(), getMovieResponse.getPopularMovies(),context);
                     EventBus.getDefault().post(moviesDataLoadedEvent);
 
                 } else {

@@ -7,6 +7,8 @@ import android.app.Application;
  */
 
 public class MovieApplication extends Application {
+
+    public static final String LOG_TAG = "MovieApp";
     @Override
     public void onCreate() {
         super.onCreate();

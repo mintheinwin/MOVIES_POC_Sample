@@ -1,11 +1,18 @@
 package com.mtw.movie_poc_screen.data.models;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.util.Log;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mtw.movie_poc_screen.MovieApplication;
+import com.mtw.movie_poc_screen.data.persistence.MovieContract;
 import com.mtw.movie_poc_screen.data.vo.MoviePopularVO;
 import com.mtw.movie_poc_screen.events.RestApiEvents;
 import com.mtw.movie_poc_screen.network.MovieDataAgentImpl;
@@ -34,35 +41,73 @@ public class MovieModel {
         return objectInstance;
     }
 
-    public void startLoadingPopularMovies() {
-        MovieDataAgentImpl.getObjectInstance().loadPopularMovies(moviePageIndex, APIConstants.ACCESS_TOKEN);
+    public void startLoadingPopularMovies(Context context) {
+        MovieDataAgentImpl.getObjectInstance().loadPopularMovies(moviePageIndex,
+                APIConstants.ACCESS_TOKEN, context);
     }
 
-    public void loadMoreMovies() {
-        MovieDataAgentImpl.getObjectInstance().loadPopularMovies(moviePageIndex, APIConstants.ACCESS_TOKEN);
+    public void loadMoreMovies(Context context) {
+        MovieDataAgentImpl.getObjectInstance().loadPopularMovies(moviePageIndex, APIConstants.ACCESS_TOKEN, context);
     }
 
 
-    public void forceRefreshMovies() {
-        mMovies=new ArrayList<>();
+    public void forceRefreshMovies(Context context) {
+        mMovies = new ArrayList<>();
         moviePageIndex = 1;
-        startLoadingPopularMovies();
+        startLoadingPopularMovies(context);
     }
 
     public List<MoviePopularVO> getMovies() {
         return mMovies;
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMoviesDataLoaded(RestApiEvents.MoviesDataLoadedEvent event) {
         mMovies.addAll(event.getLoadedMovies());
         moviePageIndex = event.getLoadedPageIndex() + 1;
+
+
+        // Logic for saving data in Persistence Layer
+        ContentValues[] movieCVs = new ContentValues[event.getLoadedMovies().size()];
+        List<ContentValues> genreCVList = new ArrayList<>();
+        List<ContentValues> movieGenreCVList = new ArrayList<>();
+
+        for (int index = 0; index < movieCVs.length; index++) {
+
+            MoviePopularVO movies = event.getLoadedMovies().get(index);
+            movieCVs[index] = movies.parseToContentValues();
+
+            for (int genreId : movies.getGenreIds()) {
+                ContentValues genreIdInMovieCV = new ContentValues();
+                genreIdInMovieCV.put(MovieContract.GenreEntry.COLUMN_GENRE_ID, genreId);
+                genreCVList.add(genreIdInMovieCV);
+            }
+
+            for (int i = 0; i < movies.getGenreIds().size(); i++) {
+                ContentValues movieGenreCV = new ContentValues();
+                movieGenreCV.put(MovieContract.MovieGenreEntry.COLUMN_GENRE_ID, String.valueOf(movies.getGenreIds()));
+                movieGenreCV.put(MovieContract.MovieGenreEntry.COLUMN_MOVIE_ID, movies.getId());
+                movieGenreCVList.add(movieGenreCV);
+            }
+        }
+
+        int insertedGenre = event.getContext().getContentResolver().bulkInsert(MovieContract.GenreEntry.CONTENT_URI,
+                genreCVList.toArray(new ContentValues[0]));
+        Log.d(MovieApplication.LOG_TAG, "insertedGenre" + insertedGenre);
+
+        int insertedMovieGenre = event.getContext().getContentResolver().bulkInsert(MovieContract.MovieGenreEntry.CONTENT_URI,
+                movieGenreCVList.toArray(new ContentValues[0]));
+        Log.d(MovieApplication.LOG_TAG, "insertedMovieGenre" + insertedMovieGenre);
+
+        int insertedMovies = event.getContext().getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI,
+                movieCVs);
+        Log.d(MovieApplication.LOG_TAG, "Inserted News" + insertedMovies);
     }
 
 
-    public MoviePopularVO getMovieById(int id){
-        for(MoviePopularVO movies : mMovies){
-            if(movies.getId()== id){
+    public MoviePopularVO getMovieById(int id) {
+        for (MoviePopularVO movies : mMovies) {
+            if (movies.getId() == id) {
                 return movies;
             }
         }

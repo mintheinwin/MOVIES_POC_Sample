@@ -53,8 +53,8 @@ public class MovieViewHolder extends BaseViewHolder<MoviePopularVO> {
                 .placeholder(R.drawable.ic_image_null_24dp)
                 .centerCrop();
         Glide.with(itemView.getRootView().getContext()).load(APIConstants.IMAGE_API + movie.getPosterPath()).apply(requestOptions).into(ivMovie);
-        float popularity = movie.getPopularity() / 200;
-        rbMovie.setRating(popularity);
+        Double popularity = movie.getPopularity() / 200;
+        rbMovie.setRating(Float.parseFloat(String.valueOf(popularity)));
     }
 
     @Override
