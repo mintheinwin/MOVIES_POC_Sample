@@ -101,7 +101,7 @@ public class MovieModel {
 
         int insertedMovies = event.getContext().getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI,
                 movieCVs);
-        Log.d(MovieApplication.LOG_TAG, "Inserted News" + insertedMovies);
+        Log.d(MovieApplication.LOG_TAG, "Inserted movies" + insertedMovies);
     }
 
 
