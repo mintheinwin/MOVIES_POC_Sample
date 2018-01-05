@@ -67,7 +67,7 @@ public class MovieModel {
         moviePageIndex = event.getLoadedPageIndex() + 1;
 
 
-        // Logic for saving data in Persistence Layer
+        //saving data into Persistence Layer
         ContentValues[] movieCVs = new ContentValues[event.getLoadedMovies().size()];
         List<ContentValues> genreCVList = new ArrayList<>();
         List<ContentValues> movieGenreCVList = new ArrayList<>();
