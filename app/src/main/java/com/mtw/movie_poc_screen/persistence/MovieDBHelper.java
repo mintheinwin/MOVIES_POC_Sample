@@ -1,10 +1,10 @@
-package com.mtw.movie_poc_screen.data.persistence;
+package com.mtw.movie_poc_screen.persistence;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.mtw.movie_poc_screen.data.persistence.MovieContract.MovieEntry;
+import com.mtw.movie_poc_screen.persistence.MovieContract.MovieEntry;
 
 /**
  * Created by Aspire-V5 on 12/6/2017.

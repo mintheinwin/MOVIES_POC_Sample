@@ -5,10 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.google.gson.annotations.SerializedName;
-import com.mtw.movie_poc_screen.data.persistence.MovieContract;
+import com.mtw.movie_poc_screen.persistence.MovieContract;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Aspire-V5 on 12/6/2017.

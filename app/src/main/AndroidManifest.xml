@@ -28,7 +28,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <provider
-            android:name=".data.persistence.MoviesProvider"
+            android:name=".persistence.MoviesProvider"
             android:authorities="com.mtw.movie_poc_screen"
             android:exported="false"
             android:syncable="true" />

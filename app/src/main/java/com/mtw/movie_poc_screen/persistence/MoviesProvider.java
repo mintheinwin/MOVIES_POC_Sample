@@ -1,4 +1,4 @@
-package com.mtw.movie_poc_screen.data.persistence;
+package com.mtw.movie_poc_screen.persistence;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;

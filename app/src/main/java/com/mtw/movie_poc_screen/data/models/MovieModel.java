@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mtw.movie_poc_screen.MovieApplication;
-import com.mtw.movie_poc_screen.data.persistence.MovieContract;
+import com.mtw.movie_poc_screen.persistence.MovieContract;
 import com.mtw.movie_poc_screen.data.vo.MoviePopularVO;
 import com.mtw.movie_poc_screen.events.RestApiEvents;
 import com.mtw.movie_poc_screen.network.MovieDataAgentImpl;
